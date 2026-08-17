@@ -367,7 +367,13 @@ export default function TerminalPage() {
             const terminalId = `term-${sessionId}-auto`
             createTerminal(terminalId, 80, 24)
             setActiveTerminalId(terminalId)
+            return
         }
+
+        // The active terminal was removed after initial inventory handling and
+        // there is nothing else to select. Keep the page empty instead of
+        // rendering a stale TerminalView or silently creating a replacement.
+        setActiveTerminalId(null)
     }, [
         session?.active,
         terminalSupported,
@@ -1025,12 +1031,13 @@ export default function TerminalPage() {
                         <DialogTitle>{t('terminal.paste.fallbackTitle')}</DialogTitle>
                         <DialogDescription>
                             {t('terminal.paste.fallbackDescription')}
-                        </DialogHeader>
+                        </DialogDescription>
+                    </DialogHeader>
                     <textarea
                         value={manualPasteText}
                         onChange={(event) => setManualPasteText(event.target.value)}
                         placeholder={t('terminal.paste.placeholder')}
-                        className="mt-2 min-h-32 w-full resize-y rounded-md border border-[var(--app-border)] bg-[var(--app-bg)] p-2 text-sm focus:outline-none focus:ring-2 focus-visible:ring-[var(--app-link)]"
+                        className="mt-2 min-h-32 w-full resize-y rounded-md border border-[var(--app-border)] bg-[var(--app-bg)] p-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--app-link)]"
                         autoCapitalize="none"
                         autoCorrect="off"
                     />
